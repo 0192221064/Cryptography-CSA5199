@@ -1,0 +1,82 @@
+#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
+#include <conio.h>
+
+#define MOD 26
+
+int key[2][2];
+int key_inv[2][2];
+
+int mod_inverse(int a, int m) {
+    a = a % m;
+    for (int x = 1; x < m; x++) {
+        if ((a * x) % m == 1)
+            return x;
+    }
+    return -1;
+}
+
+void find_inverse() {
+    int det = (key[0][0] * key[1][1] - key[0][1] * key[1][0]) % MOD;
+    if (det < 0) det += MOD;
+    int det_inv = mod_inverse(det, MOD);
+    
+    key_inv[0][0] = (key[1][1] * det_inv) % MOD;
+    key_inv[1][1] = (key[0][0] * det_inv) % MOD;
+    key_inv[0][1] = (-key[0][1] * det_inv) % MOD;
+    key_inv[1][0] = (-key[1][0] * det_inv) % MOD;
+    
+    for (int i = 0; i < 2; i++) {
+        for (int j = 0; j < 2; j++) {
+            if (key_inv[i][j] < 0)
+                key_inv[i][j] += MOD;
+        }
+    }
+}
+
+void hill_encrypt(char *plaintext, char *ciphertext) {
+    int len = strlen(plaintext);
+    for (int i = 0; i < len; i += 2) {
+        int p1 = plaintext[i] - 'A';
+        int p2 = plaintext[i + 1] - 'A';
+        ciphertext[i] = ((key[0][0] * p1 + key[0][1] * p2) % MOD) + 'A';
+        ciphertext[i + 1] = ((key[1][0] * p1 + key[1][1] * p2) % MOD) + 'A';
+    }
+    ciphertext[len] = '\0';
+}
+
+void hill_decrypt(char *ciphertext, char *decrypted) {
+    int len = strlen(ciphertext);
+    for (int i = 0; i < len; i += 2) {
+        int c1 = ciphertext[i] - 'A';
+        int c2 = ciphertext[i + 1] - 'A';
+        decrypted[i] = ((key_inv[0][0] * c1 + key_inv[0][1] * c2) % MOD) + 'A';
+        decrypted[i + 1] = ((key_inv[1][0] * c1 + key_inv[1][1] * c2) % MOD) + 'A';
+    }
+    decrypted[len] = '\0';
+}
+
+int main() {
+    char plaintext[100], ciphertext[100], decrypted[100];
+    
+    printf("Enter 2x2 key matrix:");
+    for (int i = 0; i < 2; i++) {
+        for (int j = 0; j < 2; j++) {
+            scanf("%d", &key[i][j]);
+        }
+    }
+    
+    printf("Enter plaintext (uppercase, no spaces): ");
+    scanf("%s", plaintext);
+    
+    find_inverse();
+    hill_encrypt(plaintext, ciphertext);
+    printf("Ciphertext: %s\n", ciphertext);
+    
+    hill_decrypt(ciphertext, decrypted);
+    printf("Decrypted text: %s\n", decrypted);
+    
+    getch();
+    return 0;
+}
