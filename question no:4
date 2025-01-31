@@ -1,0 +1,43 @@
+#include <stdio.h>
+#include <conio.h>
+#include <string.h>
+
+void frequencyAnalysis(char *text, int *freq) {
+    for (int i = 0; text[i] != '\0'; i++) {
+        if (text[i] >= 'A' && text[i] <= 'Z') freq[text[i] - 'A']++;
+        else if (text[i] >= 'a' && text[i] <= 'z') freq[text[i] - 'a']++;
+    }
+}
+
+void findMostFrequent(int *freq, char *mostCommon) {
+    int max1 = 0, max2 = 0, max3 = 0;
+    for (int i = 0; i < 26; i++) {
+        if (freq[i] > freq[max1]) {
+            max3 = max2;
+            max2 = max1;
+            max1 = i;
+        } else if (freq[i] > freq[max2]) {
+            max3 = max2;
+            max2 = i;
+        } else if (freq[i] > freq[max3]) {
+            max3 = i;
+        }
+    }
+    mostCommon[0] = max1 + 'a';
+    mostCommon[1] = max2 + 'a';
+    mostCommon[2] = max3 + 'a';
+    mostCommon[3] = '\0';
+}
+
+int main() {
+    char text[1000];
+    int freq[26] = {0};
+    char mostCommon[4];
+    printf("Enter the ciphertext: ");
+    gets(text);
+    frequencyAnalysis(text, freq);
+    findMostFrequent(freq, mostCommon);
+    printf("Most common letters: %s\n", mostCommon);
+    getch();
+    return 0;
+}
