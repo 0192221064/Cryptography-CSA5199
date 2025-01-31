@@ -1,0 +1,42 @@
+#include <stdio.h>
+#include <string.h>
+#include<conio.h>
+
+int main() {
+    char pt[50], ct[50];
+    int key, i;
+    
+    printf("Enter the plain text: ");
+    fgets(pt, sizeof(pt), stdin);
+    pt[strcspn(pt, "\n")] = '\0';  
+
+    printf("Enter key: ");
+    scanf("%d", &key);
+
+    for (i = 0; i < strlen(pt); i++) {
+        if (pt[i] >= 'A' && pt[i] <= 'Z') {
+            ct[i] = ((pt[i] - 'A' + key) % 26) + 'A';
+        } else if (pt[i] >= 'a' && pt[i] <= 'z') {
+            ct[i] = ((pt[i] - 'a' + key) % 26) + 'a';
+        } else {
+            ct[i] = pt[i];
+        }
+    }
+    ct[i] = '\0';
+    
+    printf("Cipher text: %s\n", ct);
+
+    for (i = 0; i < strlen(ct); i++) {
+        if (ct[i] >= 'A' && ct[i] <= 'Z') {
+            pt[i] = ((ct[i] - 'A' - key + 26) % 26) + 'A';
+        } else if (ct[i] >= 'a' && ct[i] <= 'z') {
+            pt[i] = ((ct[i] - 'a' - key + 26) % 26) + 'a';
+        } else {
+            pt[i] = ct[i];
+        }
+    }
+    pt[i] = '\0';
+
+    printf("Plain text: %s\n", pt);
+    getch();
+}
