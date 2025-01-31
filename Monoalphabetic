@@ -1,0 +1,22 @@
+#include <stdio.h>
+#include <string.h>
+#include<conio.h>
+
+void encrypt(char text[], char key[]) {
+    for (int i = 0; text[i] != '\0'; i++) {
+        if (text[i] >= 'a' && text[i] <= 'z') {
+            text[i] = key[text[i] - 'a'];
+        } else if (text[i] >= 'A' && text[i] <= 'Z') {
+            text[i] = key[text[i] - 'A'] - 32;
+        }
+    }
+}
+
+int main() {
+    char plaintext[] = "hello";
+    char key[26] = "QWERTYUIOPLKJHGFDSAZXCVBNM";
+    encrypt(plaintext, key);
+    printf("Ciphertext: %s\n", plaintext);
+    getch();
+}
+
